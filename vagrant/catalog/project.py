@@ -1,4 +1,11 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
+from flask import (
+    Flask,
+    render_template,
+    request,
+    redirect,
+    url_for,
+    flash, jsonify
+)
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import desc
@@ -119,8 +126,8 @@ def gconnect():
     stored_access_token = login_session.get('access_token')
     stored_gplus_id = login_session.get('gplus_id')
     if stored_access_token is not None and gplus_id == stored_gplus_id:
-        response = make_response(json.dumps('Current user is already connected.'),
-                                 200)
+        response = make_response(json.dumps(
+                    'Current user is already connected.'), 200)
         response.headers['Content-Type'] = 'application/json'
         return response
 
@@ -152,7 +159,7 @@ def gconnect():
     output += '!</h1>'
     output += '<img src="'
     output += login_session['picture']
-    output += ' " style = "width: 300px; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
+    output += ' " style = "width: 300px; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '  # noqa
     flash("You are now logged in as %s" % login_session['username'])
     print "done!"
     return output
@@ -169,9 +176,11 @@ def createUser(login_session):
     Returns:
         user.id - integer, the ID of the created user
     """
-    newUser = User(Uname=login_session['username'],
-                    email=login_session['email'],
-                    picture=login_session['picture'])
+    newUser = User(
+        Uname=login_session['username'],
+        email=login_session['email'],
+        picture=login_session['picture']
+        )
     session.add(newUser)
     session.commit()
     user = session.query(User).filter_by(email=login_session['email']).one()
@@ -291,11 +300,14 @@ def showMain():
         page, passing the component body_set and latest_item.
     """
     body_set = session.query(Catalog).all()
-    latest_item = session.query(Item.Iname, Item.created_at,
-                Catalog.Cname, Item.item_image).join(
-                Catalog).order_by(desc(Item.created_at)).limit(8)
-    return render_template('catalog_summary.html', body_set=body_set,
-                            latest_item=latest_item)
+    latest_item = session.query(
+        Item.Iname, Item.created_at,
+        Catalog.Cname, Item.item_image).join(
+        Catalog).order_by(desc(Item.created_at)).limit(8)
+    return render_template(
+        'catalog_summary.html', body_set=body_set,
+        latest_item=latest_item
+        )
 
 
 @app.route('/catalog/<string:catalog_name>/items/', methods=['GET', 'POST'])
@@ -320,16 +332,25 @@ def showCatalogItems(catalog_name):
     items = session.query(Item).filter_by(catalog_id=catalog.id).all()
     items_count = session.query(Item).filter_by(catalog_id=catalog.id).count()
     if 'username' not in login_session:
-        return render_template('public_catalog_entries.html',
-                body_set=body_set, catalog=catalog, items=items,
-                items_count=items_count)
+        return render_template(
+            'public_catalog_entries.html',
+            body_set=body_set, catalog=catalog, items=items,
+            items_count=items_count
+            )
     else:
-        return render_template('catalog_entries.html', body_set=body_set,
-                catalog=catalog, items=items, items_count=items_count)
+        return render_template(
+            'catalog_entries.html',
+            body_set=body_set,
+            catalog=catalog,
+            items=items,
+            items_count=items_count
+            )
 
 
-@app.route('/catalog/<string:catalog_name>/<string:item_name>/',
-            methods=['GET', 'POST'])
+@app.route(
+    '/catalog/<string:catalog_name>/<string:item_name>/',
+    methods=['GET', 'POST']
+    )
 def showItemDesc(catalog_name, item_name):
     """
     Behavior:
@@ -347,12 +368,20 @@ def showItemDesc(catalog_name, item_name):
     item = session.query(Item).filter_by(Iname=item_name).first()
     creator = getUserInfo(item.user_id)
     catalog = session.query(Catalog).filter_by(Cname=catalog_name).first()
-    if 'username' not in login_session or creator.id!=login_session['user_id']:
-        return render_template('public_item_desc.html', item=item,
-                                creator=creator, catalog=catalog)
+    if 'username' not in login_session or creator.id != login_session['user_id']:  # noqa
+        return render_template(
+            'public_item_desc.html',
+            item=item,
+            creator=creator,
+            catalog=catalog
+            )
     else:
-        return render_template('item_desc.html', item=item, creator=creator,
-                                catalog=catalog)
+        return render_template(
+            'item_desc.html',
+            item=item,
+            creator=creator,
+            catalog=catalog
+            )
 
 
 @app.route('/catalog/<string:item_name>/edit/', methods=['GET', 'POST'])
@@ -410,12 +439,15 @@ def newItem(catalog_name):
     """
     if request.method == 'POST':
         catalog = session.query(Catalog).filter_by(Cname=catalog_name).first()
-        newItem = Item(Iname=request.form['name'],
-                    description=request.form['description'],
-                    pieces=request.form['pieces'],
-                    item_image=request.form['item_image'],
-                    created_at=datetime.now(), catalog_id=catalog.id,
-                    user_id=login_session['user_id'])
+        newItem = Item(
+            Iname=request.form['name'],
+            description=request.form['description'],
+            pieces=request.form['pieces'],
+            item_image=request.form['item_image'],
+            created_at=datetime.now(),
+            catalog_id=catalog.id,
+            user_id=login_session['user_id']
+            )
         session.add(newItem)
         session.commit()
         flash("The item %s has been correctly created" % request.form['name'])
@@ -445,7 +477,11 @@ def deleteItem(item_name):
         session.delete(item)
         session.commit()
         flash("The item %s has been correctly deleted" % item_name)
-        return redirect(url_for('showCatalogItems', catalog_name=catalog.Cname))
+        return redirect(
+            url_for(
+                'showCatalogItems',
+                catalog_name=catalog.Cname)
+                )
     else:
         return render_template('delete_item.html', item=item)
 
