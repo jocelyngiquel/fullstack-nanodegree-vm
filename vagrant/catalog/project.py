@@ -445,7 +445,7 @@ def deleteItem(item_name):
         session.delete(item)
         session.commit()
         flash("The item %s has been correctly deleted" % item_name)
-        return redirect(url_for('showCatalogItems', catalog_name=catalog.name))
+        return redirect(url_for('showCatalogItems', catalog_name=catalog.Cname))
     else:
         return render_template('delete_item.html', item=item)
 
