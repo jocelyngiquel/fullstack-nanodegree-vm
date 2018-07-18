@@ -1,0 +1,24 @@
+{% extends "main.html" %} {% block content %} {% include "header.html" %}
+{% include "banner.html" %} {% include "catalog_set.html" %}
+
+<div>
+    <h3 class="title">{{ catalog.Cname }} Items ({{items_count}} items)</h3>
+    <div>
+        <a class="btn btn-primary" role="button" href='{{url_for('newItem', catalog_name = catalog.Cname)}}'>Add item</a>
+    </div>
+    <section class="catalog_entries">
+        {% for i in items %}
+        <div class="catalog_entries_item">
+            <img src="{{i.item_image}}" alt="{{i.Iname}}">
+            <div class="catalog_entries_overlay">
+                <div class="catalog_entries_content">
+                    <span>{{i.Iname}}</span>
+                    <a class="btn btn-primary" role="button" href='{{url_for('showItemDesc', catalog_name = catalog.Cname, item_name = i.Iname)}}'>View</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </section>
+
+    {% include "footer.html" %} {% endblock %}
+    

@@ -1,0 +1,12 @@
+{% extends "main.html" %} {% block content %} {% include "header.html" %}
+{% include "banner.html" %}
+
+<h2> Are you sure you want to delete the item {{item.Iname}}? </h2>
+
+<form action="#" method='post'>
+
+        <button type="submit" class="btn btn-primary" role="button">Delete</button>
+
+</form>
+<a class="btn btn-primary" role="button" href='{{url_for('showMain')}}'>Cancel</a>
+{% include "footer.html" %} {% endblock %}

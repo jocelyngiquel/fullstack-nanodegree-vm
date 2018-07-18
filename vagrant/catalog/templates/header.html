@@ -1,0 +1,16 @@
+<header class="header">
+    <a href='{{url_for('showMain')}}'>
+        <i class="fas fa-home"></i>
+    </a>
+    <div class="header_container">
+        {%if 'username' not in session %}
+        <a href="{{url_for('showLogin')}}">
+            <i class="fas fa-sign-in-alt"></i>
+        </a>
+        {% else %}
+        <a href="{{url_for('disconnect')}}">
+            <i class="fas fa-sign-out-alt"></i>
+        </a>
+        {% endif %}
+    </div>
+</header>

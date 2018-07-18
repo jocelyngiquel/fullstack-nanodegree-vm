@@ -1,0 +1,16 @@
+<div>
+    <h3 class="title">Categories</h3>
+    <section class="catalog_set">
+        {% for c in body_set %}
+        <div class="catalog_set_item">
+            <img src="{{c.catalog_image}}" alt="{{c.Cname}}">
+            <div class="catalog_set_overlay">
+                <div class="catalog_set_content">
+                    <span>{{c.Cname}}</span>
+                    <a class="btn btn-primary" role="button" href='{{url_for('showCatalogItems', catalog_name = c.Cname)}}'>View</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </section>
+</div>

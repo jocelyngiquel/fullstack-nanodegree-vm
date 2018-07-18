@@ -1,0 +1,24 @@
+{% extends "main.html" %} {% block content %} {% include "header.html" %}
+{% include "banner.html" %}
+
+<h1>{{item.Iname}}</h1>
+<h3>Description</h3>
+<div>
+    <p>
+        Item originally entered by {{creator.Uname}}
+    </p>
+    <p>
+        {{item.description}}
+    </p>
+    <p>
+        Number of pieces: {{item.pieces}}
+    </p>
+</div>
+<img class="image_desc" src="{{item.item_image}}" alt="{{item.Iname}}">
+</div>
+<a class="btn btn-primary" role="button" href='{{url_for('editItem', item_name = item.Iname)}}'>Edit</a>
+<br>
+<a class="btn btn-primary" role="button" href='{{url_for('deleteItem', item_name = item.Iname)}}'>Delete</a>
+<br>
+<a class="btn btn-primary" role="button" href='{{url_for('showCatalogItems', catalog_name = catalog.Cname)}}'>Back to the {{catalog.Cname}} catalog page</a>
+{% include "footer.html" %} {% endblock %}

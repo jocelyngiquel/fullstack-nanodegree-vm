@@ -1,0 +1,48 @@
+.catalog_entries {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.catalog_set {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.ccatalog_set_item {
+    order: 10;
+}
+
+.catalog_entries_item {
+    order: 10;
+}
+
+@media screen and (min-width: 500px) {
+    .catalog_entries_item, .catalog_set_item {
+        width: 50%;
+        order: 0;
+    }
+    .catalog_entries_item img {
+        width: 100%;
+        height: 200px;
+    }
+}
+
+@media screen and (min-width: 660px) {
+    .catalog_entries_item , .catalog_set_item {
+        width: 33%;
+        order: 0;
+    }
+
+    .catalog_entries_item img {
+        width: 100%;
+        height: 200px;
+    }
+}
+
+@media screen and (min-width: 850px) {
+    main, .header, .catalog_entries, .footer, .catalog_set {
+      width: 850px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  }

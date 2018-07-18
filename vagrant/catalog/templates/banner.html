@@ -1,0 +1,15 @@
+<section class="central">
+    <article class="description">
+        <h2>Catalog App</h2>
+    </article>
+</section>
+
+<div class='flash'>
+    {% with messages = get_flashed_messages() %} {% if messages %}
+    <ul>
+        {% for message in messages %}
+        <strong> {{ message }} </strong>
+        {% endfor %}
+    </ul>
+    {% endif %} {% endwith %}
+</div>

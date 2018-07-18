@@ -1,0 +1,25 @@
+{% extends "main.html" %} {% block content %} {% include "header.html" %}
+{% include "banner.html" %}
+
+<h1>Add a new item</h1>
+<form action="#" method="POST">
+        <p>
+                <label for="name">Name:</label>
+                <input type="text" size="30" name="name" placeholder="name">
+        </p>
+        <p>
+                <label for="description">Description:</label>
+                <textarea class="form-control" maxlength="250" rows="3" name="description" placeholder="description"></textarea>
+        </p>
+        <p>
+                <label for="pieces">Pieces:</label>
+                <input type="text" size="10" name="pieces" placeholder="pieces">
+        </p>
+        <p>
+                <label for="item_image">Item image URL:</label>
+                <input type="text" size="30" name="item_image" placeholder="image URL">
+        </p>
+        <input class="btn btn-primary" role="button" type="submit" value="Submit">
+</form>
+<a class="btn btn-primary" role="button" href='{{url_for('showMain')}}'>Cancel</a>
+{% include "footer.html" %} {% endblock %}
