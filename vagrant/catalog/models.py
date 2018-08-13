@@ -7,6 +7,9 @@ Base = declarative_base()
 
 
 class User(Base):
+    """
+    Registered user information is stored in db
+    """
     __tablename__ = 'user'
 
     id = Column(Integer, primary_key=True)
@@ -16,10 +19,13 @@ class User(Base):
 
 
 class Catalog(Base):
+    """
+    Catalog entries are stored in db
+    """
     __tablename__ = 'catalog'
 
     id = Column(Integer, primary_key=True)
-    Cname = Column(String(250), nullable=False)
+    Cname = Column(String(250), nullable=False, unique=True)
     catalog_image = Column(String(250))
     user_id = Column(Integer, ForeignKey('user.id'))
     user = relationship(User)
@@ -29,15 +35,19 @@ class Catalog(Base):
         """Return object data in easily serializeable format"""
         return {
             'name': self.Cname,
-            'id': self.id,
+            'catalog_id': self.id,
             'catalog_image': self.catalog_image,
+            'user_id': self.user_id,
         }
 
 
 class Item(Base):
+    """
+    items entries are stored in db
+    """
     __tablename__ = 'item'
 
-    Iname = Column(String(80), nullable=False)
+    Iname = Column(String(80), nullable=False, unique=True)
     id = Column(Integer, primary_key=True)
     description = Column(String)
     pieces = Column(Integer)
@@ -56,6 +66,8 @@ class Item(Base):
             'description': self.description,
             'pieces': self.pieces,
             'item_image': self.item_image,
+            'catalog_id': self.catalog_id,
+            'user_id': self.user_id,
         }
 
 

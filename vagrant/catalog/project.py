@@ -183,7 +183,8 @@ def createUser(login_session):
         )
     session.add(newUser)
     session.commit()
-    user = session.query(User).filter_by(email=login_session['email']).one()
+    user = session.query(User).filter_by(
+        email=login_session['email']).one_or_none()
     return user.id
 
 
@@ -196,7 +197,7 @@ def getUserInfo(user_id):
     Returns:
         user - dict, contains the user tables as stored in the User table
     """
-    user = session.query(User).filter_by(id=user_id).one()
+    user = session.query(User).filter_by(id=user_id).one_or_none()
     return user
 
 
@@ -210,7 +211,7 @@ def getUserID(email):
         user.id - integer, the ID of the created user
     """
     try:
-        user = session.query(User).filter_by(email=email).one()
+        user = session.query(User).filter_by(email=email).one_or_none()
         return user.id
     except:
         return None
@@ -368,7 +369,8 @@ def showItemDesc(catalog_name, item_name):
     item = session.query(Item).filter_by(Iname=item_name).first()
     creator = getUserInfo(item.user_id)
     catalog = session.query(Catalog).filter_by(Cname=catalog_name).first()
-    if 'username' not in login_session or creator.id != login_session['user_id']:  # noqa
+    if 'username' not in login_session or creator.id != login_session[
+            'user_id']:
         return render_template(
             'public_item_desc.html',
             item=item,
@@ -400,7 +402,8 @@ def editItem(item_name):
         flask flash message.
     """
     editedItem = session.query(Item).filter_by(Iname=item_name).first()
-    catalog = session.query(Catalog).filter_by(id=editedItem.catalog_id).one()
+    catalog = session.query(Catalog).filter_by(
+        id=editedItem.catalog_id).one_or_none()
     if request.method == 'POST':
         if request.form['name']:
             editedItem.Iname = request.form['name']
@@ -471,8 +474,9 @@ def deleteItem(item_name):
         component item or call the showCatalogItems function.
         flask flash message
     """
-    item = session.query(Item).filter_by(Iname=item_name).one()
-    catalog = session.query(Catalog).filter_by(id=item.catalog_id).one()
+    item = session.query(Item).filter_by(Iname=item_name).one_or_none()
+    catalog = session.query(Catalog).filter_by(
+        id=item.catalog_id).one_or_none()
     if request.method == 'POST':
         session.delete(item)
         session.commit()
