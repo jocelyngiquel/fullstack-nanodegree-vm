@@ -7,6 +7,7 @@ from flask import (
     flash, jsonify
 )
 from sqlalchemy import create_engine
+from sqlalchemy.pool import StaticPool
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import desc
 from models import Catalog, Base, Item, User
@@ -29,7 +30,11 @@ app = Flask(__name__)
 # Establish all conversation with the database
 
 
-engine = create_engine('sqlite:///legocatalog.db', pool_pre_ping=True)
+engine = create_engine(
+    'sqlite:///legocatalog.db',
+    connect_args = {'check_same_thread':False},
+    poolclass = StaticPool
+    )
 Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
@@ -159,7 +164,9 @@ def gconnect():
     output += '!</h1>'
     output += '<img src="'
     output += login_session['picture']
-    output += ' " style = "width: 300px; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '  # noqa
+    output += ' " style = "width: 300px;' \
+     'height: 300px;border-radius: 150px;' \
+     '-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
     flash("You are now logged in as %s" % login_session['username'])
     print "done!"
     return output
