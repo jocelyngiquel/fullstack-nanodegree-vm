@@ -411,26 +411,31 @@ def editItem(item_name):
     editedItem = session.query(Item).filter_by(Iname=item_name).first()
     catalog = session.query(Catalog).filter_by(
         id=editedItem.catalog_id).one_or_none()
-    if request.method == 'POST':
-        if request.form['name']:
-            editedItem.Iname = request.form['name']
-        if request.form['description']:
-            editedItem.description = request.form['description']
-        if request.form['pieces']:
-            editedItem.pieces = request.form['pieces']
-        if request.form['item_image']:
-            editedItem.item_image = request.form['item_image']
-        session.add(editedItem)
-        session.commit()
-        if request.form['name']:
-            flash("The item %s has been correctly edited" %
-                  request.form['name'])
-        else:
-            flash("The item %s has been correctly edited" % item_name)
-        return redirect(url_for('showCatalogItems',
-                                catalog_name=catalog.Cname))
+    creator = getUserInfo(editedItem.user_id)
+    if 'username' not in login_session or creator.id != login_session[
+        'user_id']:
+        return render_template('non_authorized.html')
     else:
-        return render_template('edit_item.html', item=editedItem)
+        if request.method == 'POST':
+            if request.form['name']:
+                editedItem.Iname = request.form['name']
+            if request.form['description']:
+                editedItem.description = request.form['description']
+            if request.form['pieces']:
+                editedItem.pieces = request.form['pieces']
+            if request.form['item_image']:
+                editedItem.item_image = request.form['item_image']
+            session.add(editedItem)
+            session.commit()
+            if request.form['name']:
+                flash("The item %s has been correctly edited" %
+                    request.form['name'])
+            else:
+                flash("The item %s has been correctly edited" % item_name)
+            return redirect(url_for('showCatalogItems',
+                                    catalog_name=catalog.Cname))
+        else:
+            return render_template('edit_item.html', item=editedItem)
 
 
 @app.route('/catalog/<string:catalog_name>/new/', methods=['GET', 'POST'])
@@ -447,23 +452,26 @@ def newItem(catalog_name):
         showCatalogItems function.
         flask flash message
     """
-    if request.method == 'POST':
-        catalog = session.query(Catalog).filter_by(Cname=catalog_name).first()
-        newItem = Item(
-            Iname=request.form['name'],
-            description=request.form['description'],
-            pieces=request.form['pieces'],
-            item_image=request.form['item_image'],
-            created_at=datetime.now(),
-            catalog_id=catalog.id,
-            user_id=login_session['user_id']
-            )
-        session.add(newItem)
-        session.commit()
-        flash("The item %s has been correctly created" % request.form['name'])
-        return redirect(url_for('showCatalogItems', catalog_name=catalog_name))
+    if 'username' not in login_session:
+        return render_template('non_authorized.html')
     else:
-        return render_template('new_item.html')
+        if request.method == 'POST':
+            catalog = session.query(Catalog).filter_by(Cname=catalog_name).first()
+            newItem = Item(
+                Iname=request.form['name'],
+                description=request.form['description'],
+                pieces=request.form['pieces'],
+                item_image=request.form['item_image'],
+                created_at=datetime.now(),
+                catalog_id=catalog.id,
+                user_id=login_session['user_id']
+                )
+            session.add(newItem)
+            session.commit()
+            flash("The item %s has been correctly created" % request.form['name'])
+            return redirect(url_for('showCatalogItems', catalog_name=catalog_name))
+        else:
+            return render_template('new_item.html')
 
 
 @app.route('/catalog/<string:item_name>/delete/', methods=['GET', 'POST'])
@@ -484,17 +492,22 @@ def deleteItem(item_name):
     item = session.query(Item).filter_by(Iname=item_name).one_or_none()
     catalog = session.query(Catalog).filter_by(
         id=item.catalog_id).one_or_none()
-    if request.method == 'POST':
-        session.delete(item)
-        session.commit()
-        flash("The item %s has been correctly deleted" % item_name)
-        return redirect(
-            url_for(
-                'showCatalogItems',
-                catalog_name=catalog.Cname)
-                )
-    else:
-        return render_template('delete_item.html', item=item)
+    creator = getUserInfo(item.user_id)
+    if 'username' not in login_session or creator.id != login_session[
+        'user_id']:
+        return render_template('non_authorized.html')
+    else:  
+        if request.method == 'POST':
+            session.delete(item)
+            session.commit()
+            flash("The item %s has been correctly deleted" % item_name)
+            return redirect(
+                url_for(
+                    'showCatalogItems',
+                    catalog_name=catalog.Cname)
+                    )
+        else:
+            return render_template('delete_item.html', item=item)
 
 
 @app.route('/catalog/<string:catalog_name>/items/json')
